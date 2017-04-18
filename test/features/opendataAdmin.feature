@@ -11,3 +11,6 @@ Feature: Loggin in to admin
     Scenario: I am able to log in
 
         Then I should see the signin page
+        When I enter my credentials
+        And I click the signin button
+        Then I should see the sites list

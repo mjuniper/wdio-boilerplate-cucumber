@@ -1,3 +1,4 @@
+require('dotenv').config();
 exports.config = {
 
     // =======================
@@ -19,7 +20,7 @@ exports.config = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-        './test/features/**/*.feature'
+        './test/features/**/opendataAdmin.feature'
     ],
     // Patterns to exclude.
     exclude: [

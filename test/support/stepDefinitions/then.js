@@ -5,6 +5,7 @@
 const examplePage = require('../pages/example.page');
 const opendataPage = require('../pages/opendata.page');
 const opendataSigninPage = require('../pages/opendata-signin.page');
+const opendataSitesListPage = require('../pages/opendata-sites-list.page');
 
 module.exports = function(){
 
@@ -28,4 +29,9 @@ module.exports = function(){
         return browser.isVisible(opendataSigninPage.iframe).should.be.true;
     });
 
+    this.Then(/^I should see the sites list$/, () => {
+        browser.waitForVisible(opendataSitesListPage.sitesListItem);
+        const sitesListItems = browser.elements(opendataSitesListPage.sitesListItem);
+        return sitesListItems.value.length.should.equal(10);
+    });
 };
