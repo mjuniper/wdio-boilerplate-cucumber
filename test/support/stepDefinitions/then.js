@@ -4,6 +4,7 @@
 
 const examplePage = require('../pages/example.page');
 const opendataPage = require('../pages/opendata.page');
+const opendataSigninPage = require('../pages/opendata-signin.page');
 
 module.exports = function(){
 
@@ -20,4 +21,11 @@ module.exports = function(){
         const pageTitleIsCorrect = browser.getTitle().should.equal(opendataPage.pageTitle);
         return newstDataPresent && pageTitleIsCorrect;
     });
+
+    this.Then(/^I should see the signin page$/, () => {
+        // browser.pause(5000);
+        browser.waitForVisible(opendataSigninPage.iframe);
+        return browser.isVisible(opendataSigninPage.iframe).should.be.true;
+    });
+
 };

@@ -3,6 +3,7 @@
  */
 
 const examplePage = require('../pages/example.page');
+const opendataSigninPage = require('../pages/opendata-signin.page');
 
 module.exports = function(){
 
@@ -18,5 +19,10 @@ module.exports = function(){
     this.When(/^I click the search button$/, () => {
         // browser.click(examplePage.searchButton);
         browser.keys('Enter');
+    });
+
+    this.When(/^I log in$/, () => {
+        // browser.click(examplePage.searchButton);
+        // browser.keys('Enter');
     });
 };
