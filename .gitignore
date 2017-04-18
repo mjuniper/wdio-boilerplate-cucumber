@@ -110,4 +110,4 @@ test/reports/junit/
 
 allure-report/
 
-.env.*
+.env
