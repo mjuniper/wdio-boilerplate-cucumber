@@ -13,7 +13,8 @@
     "test": "node_modules/.bin/wdio test/config/prod.conf.js",
     "selenium": "node_modules/.bin/selenium-standalone start",
     "report": "node_modules/.bin/allure generate test/reports/allure-results/ && allure report",
-    "test-local-dev": "wdio test/config/suite.conf.js"
+    "test-local-dev": "wdio test/config/suite.conf.js",
+    "wip": "wdio test/config/suite.wip.js"
   },
   "keywords": [
     "test",
