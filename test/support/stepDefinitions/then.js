@@ -72,7 +72,19 @@ module.exports = function(){
 
     this.Then(/^I verify the collaboration group and initiative item$/, () => {
         console.log ("verifying that global.initiativeTitle is "+ global.initiativeTitle);
-        browser.pause(30000);
         return true
     });
+
+    this.Then(/^I call myFunc$/, () => {
+        console.log ("entering, I call myfunc");
+        opendataPage.myFunc1.get(1);
+        console.log ("");
+        opendataPage.myFunc2.get();
+        console.log ("");
+        opendataPage.myFunc3.get2();
+
+        console.log ("leaving, I call myfunc");
+        return true
+    });
+
 };

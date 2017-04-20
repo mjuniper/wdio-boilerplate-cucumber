@@ -29,3 +29,4 @@ Feature: Create initiative
         And I click the initiative create next button
         And I wait for and dismiss the initiative creation progress modal
         Then I verify the collaboration group and initiative item
+        Then I call myFunc
