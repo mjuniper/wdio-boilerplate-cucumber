@@ -29,6 +29,8 @@ module.exports = function(){
         browser.waitForExist(opendataSigninPage.iframe);
         browser.frame(opendataSigninPage.iframeId);
 
+        browser.waitForExist(opendataSigninPage.username);
+        browser.waitForVisible(opendataSigninPage.username);
         browser.click(opendataSigninPage.username);
         browser.clearElement(opendataSigninPage.username);
         browser.setValue(opendataSigninPage.username, process.env.username);
@@ -101,6 +103,7 @@ module.exports = function(){
     });
 
     this.When(/^I go to sites admin$/, () => {
+        browser.waitForExist(opendataPage.userDropdown);
         browser.waitForVisible(opendataPage.userDropdown);
         browser.click(opendataPage.userDropdown);
         browser.waitForVisible(opendataPage.manageSitesOption);
