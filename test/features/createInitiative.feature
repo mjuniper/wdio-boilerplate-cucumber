@@ -28,3 +28,4 @@ Feature: Create initiative
         And I supply a title for the initiative
         And I click the initiative create next button
         And I wait for and dismiss the initiative creation progress modal
+        Then I verify the collaboration group and initiative item

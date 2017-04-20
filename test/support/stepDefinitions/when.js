@@ -5,6 +5,7 @@ const examplePage = require('../pages/example.page');
 const opendataSigninPage = require('../pages/opendata-signin.page');
 const opendataPage = require('../pages/opendata.page');
 const opendataAdminPage = require('../pages/opendata-admin.page');
+b = a=>a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b);
 
 module.exports = function(){
 
@@ -65,10 +66,17 @@ module.exports = function(){
     this.When(/^I supply a title for the initiative$/, () => {
         browser.waitForExist(opendataAdminPage.initiativeTitleInput);
         browser.waitForVisible(opendataAdminPage.initiativeTitleInput);
+
+        // TODO put this in a function or something
+        global.initiativeTitle = "Test Initiative "
+          + new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+          + " " + b().replace(/-/g,'');
+        console.log ("setting global.initiativeTitle to " + global.initiativeTitle);
+
         var disabled;
         disabled = browser.getAttribute(opendataAdminPage.initiativeCreateNextButton, 'disabled');
         console.log ("disabled is ", disabled);
-        browser.setValue(opendataAdminPage.initiativeTitleInput,"cucumber new inititative");
+        browser.setValue(opendataAdminPage.initiativeTitleInput,global.initiativeTitle);
         disabled = browser.getAttribute(opendataAdminPage.initiativeCreateNextButton, 'disabled');
         console.log ("disabled is ", disabled);
     });

@@ -8,6 +8,8 @@ const opendataSigninPage = require('../pages/opendata-signin.page');
 const opendataSitesListPage = require('../pages/opendata-sites-list.page');
 const opendataAdminPage = require('../pages/opendata-admin.page');
 
+var ArcGIS = require('arcgis')
+
 module.exports = function(){
 
     this.Then(/^I should see a list of search results$/, () => {
@@ -65,6 +67,12 @@ module.exports = function(){
     });
 
     this.Then(/^I should be at an initiative configuration page$/, () => {
-        browser.pause(30);
+        browser.waitForExist(opendataAdminPage.initiativeGetStartedButton);
+    });
+
+    this.Then(/^I verify the collaboration group and initiative item$/, () => {
+        console.log ("verifying that global.initiativeTitle is "+ global.initiativeTitle);
+        browser.pause(30000);
+        return true
     });
 };
