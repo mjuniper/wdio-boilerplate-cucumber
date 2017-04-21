@@ -8,7 +8,7 @@ const opendataSigninPage = require('../pages/opendata-signin.page');
 const opendataSitesListPage = require('../pages/opendata-sites-list.page');
 const opendataAdminPage = require('../pages/opendata-admin.page');
 
-var ArcGIS = require('arcgis')
+var arcgis = require('arcgis')
 
 module.exports = function(){
 
@@ -71,7 +71,10 @@ module.exports = function(){
     });
 
     this.Then(/^I verify the collaboration group and initiative item$/, () => {
-        console.log ("verifying that global.initiativeTitle is "+ global.initiativeTitle);
+        console.log ("verifying this.initiativeTitle is "+ this.initiativeTitle + " ...");
+        var agoidentities = require('../../config/agoidentities')
+        console.log ("agoidentitites is: ", agoidentities);
+        arcgis.request().then( function (results) { console.log("results is ", results) } )
         return true
     });
 
@@ -81,7 +84,9 @@ module.exports = function(){
         console.log ("");
         opendataPage.myFunc2.get();
         console.log ("");
-        opendataPage.myFunc3.get2();
+        console.log ("myFunc3.foo returns:", opendataPage.myFunc3.foo("abc"));
+        // console.log ("foo2? returns:", opendataPage.myFunc4.foo2("abc"));
+        // console.log ("myFunc5? returns:", opendataPage.myFunc5("abc"));
 
         console.log ("leaving, I call myfunc");
         return true

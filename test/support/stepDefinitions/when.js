@@ -72,10 +72,13 @@ module.exports = function(){
         browser.waitForVisible(opendataAdminPage.initiativeTitleInput);
 
         // TODO put this in a function or something
-        global.initiativeTitle = "Test Initiative "
+        initiativeTitle = "Test Initiative "
           + new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
           + " " + b().replace(/-/g,'');
-        console.log ("setting global.initiativeTitle to " + global.initiativeTitle);
+        console.log ("setting this.initiativeTitle to " + initiativeTitle);
+        this.initiativeTitle = initiativeTitle
+          + new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+          + " " + b().replace(/-/g,'');
 
         var disabled;
         disabled = browser.getAttribute(opendataAdminPage.initiativeCreateNextButton, 'disabled');
