@@ -8,7 +8,8 @@ const opendataSigninPage = require('../pages/opendata-signin.page');
 const opendataSitesListPage = require('../pages/opendata-sites-list.page');
 const opendataAdminPage = require('../pages/opendata-admin.page');
 
-var arcgis = require('arcgis')
+var request = require('request');
+// var arcgis = require('arcgis');
 
 module.exports = function(){
 
@@ -74,7 +75,65 @@ module.exports = function(){
         console.log ("verifying this.initiativeTitle is "+ this.initiativeTitle + " ...");
         var agoidentities = require('../../config/agoidentities')
         console.log ("agoidentitites is: ", agoidentities);
-        arcgis.request().then( function (results) { console.log("results is ", results) } )
+
+        // // var ago = arcgis();
+        // // var opts = {
+        // //     url: '/generateToken',
+        // //     form: {
+        // //         username: process.env.username,
+        // //         password: process.env.password,
+        // //         referrer: 'https ://qaext.arcgis.com/sharing/rest/',
+        // //         f: 'json'
+        // //     },
+        // //     post: true,
+        // //     rootUrl: 'https://qaext.arcgis.com/sharing/rest'
+        // // };
+        // // console.log('calling ago.request...');
+        // // ago.request(opts)
+        // // .then(function (results) {
+        // //     console.log('>>>>> got results from generateToken: ');
+        // // })
+        // // .catch(function (err) {
+        // //     console.log('>>>>> got error from generateToken: ');
+        // // });
+        //
+        // // var opts = {
+        // //     url: 'https://qaext.arcgis.com/sharing/rest/generateToken',
+        // //     timeout: 1000,
+        // //     formData: {
+        // //         username: process.env.username,
+        // //         password: process.env.password,
+        // //         referrer: 'https ://qaext.arcgis.com/sharing/rest/',
+        // //         f: 'json'
+        // //     },
+        // // };
+        // // console.log('>>>>> making request');
+        // // request.post(opts, function (err, resp, body) {
+        // //     console.log('>>>>> YAY! <<<<<');
+        // // });
+        //
+        // console.log('>>>>> making request');
+        // // request('http://www.google.com', function (error, response, body) {
+        // //   console.log('error:', error); // Print the error if one occurred
+        // //   console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        // //   console.log('body:', body); // Print the HTML for the Google homepage.
+        // // });
+        // request.post({
+        //     // url: 'https://qaext.arcgis.com/sharing/rest/oauth2/token/',
+        //     url: 'https://qaext.arcgis.com/sharing/rest/generateToken',
+        //     json: true,
+        //     timeout: 500,
+        //     form: {
+        //         username: process.env.username,
+        //         password: process.env.password,
+        //         referrer: 'https ://qaext.arcgis.com/sharing/rest/',
+        //         f: 'json'
+        //     }
+        // }, function(err, res) {
+        //     console.log('>>>>> YAY? <<<<<');
+        // });
+        // console.log('>>>>> made request');
+
         return true
     });
 

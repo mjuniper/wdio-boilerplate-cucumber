@@ -19,6 +19,9 @@ module.exports = Object.create(Page, {
     // myFunc4:  { foo2: function (s) { console.log("in myFunc4 foo2"); return s+s+s; } }, // doesn't work!!
     // myFunc5:  { function (s) { console.log("in myFunc5 foo2"); return s+s+s; } }, // doesn't work
 
+    // JEREMY - TRY THIS!
+    // myFunc6: function (arg) { console.log(arg); },
+
     pageTitle:    { value: 'ArcGIS Open Data' },
     url:          { value: 'http://opendataqa.arcgis.com/' },
     newestData:        { value: '.featurette-new .row' },

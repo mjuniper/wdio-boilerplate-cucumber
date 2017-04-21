@@ -1,4 +1,6 @@
 require('dotenv').config();
+var request = require('request');
+var arcgis = require('arcgis');
 exports.config = {
 
     // =======================
@@ -205,6 +207,27 @@ exports.config = {
         var chai = require('chai'); //eslint-disable-line no-var
         global.expect = chai.expect;
         chai.Should();
+
+        var ago = arcgis();
+        var opts = {
+            url: '/generateToken',
+            form: {
+                username: process.env.username,
+                password: process.env.password,
+                referer: 'qaext.arcgis.com',
+                f: 'json'
+            },
+            post: true,
+            rootUrl: 'https://qaext.arcgis.com/sharing/rest'
+        };
+
+        ago.request(opts)
+        .then(function (results) {
+            console.log('>>>>> token: ', results.token);
+        })
+        .catch(function (err) {
+            console.log('>>>>> got error from generateToken: ', err);
+        });
     },
     //
     // Hook that gets executed before the suite starts
