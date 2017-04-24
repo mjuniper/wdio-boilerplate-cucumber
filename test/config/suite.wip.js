@@ -223,7 +223,9 @@ exports.config = {
 
         ago.request(opts)
         .then(function (results) {
-            console.log('>>>>> token: ', results.token);
+            console.log('>>>>> in before: token: ', results.token);
+            global.agoToken = results.token;
+            this.crapola = results.token;
         })
         .catch(function (err) {
             console.log('>>>>> got error from generateToken: ', err);

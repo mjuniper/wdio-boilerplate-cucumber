@@ -9,7 +9,7 @@ const opendataSitesListPage = require('../pages/opendata-sites-list.page');
 const opendataAdminPage = require('../pages/opendata-admin.page');
 
 var request = require('request');
-// var arcgis = require('arcgis');
+var arcgis = require('arcgis');
 
 module.exports = function(){
 
@@ -73,8 +73,8 @@ module.exports = function(){
 
     this.Then(/^I verify the collaboration group and initiative item$/, () => {
         console.log ("verifying this.initiativeTitle is "+ this.initiativeTitle + " ...");
-        var agoidentities = require('../../config/agoidentities')
-        console.log ("agoidentitites is: ", agoidentities);
+        // var agoidentities = require('../../config/agoidentities')
+        // console.log ("agoidentitites is: ", agoidentities);
 
         // // var ago = arcgis();
         // // var opts = {
@@ -133,19 +133,56 @@ module.exports = function(){
         //     console.log('>>>>> YAY? <<<<<');
         // });
         // console.log('>>>>> made request');
+        
+        // global.token = "WRONG";
+        // console.log('>>>> before, token is ' + global.token);
+        // console.log('>>>> begin...');
+        // var ago = arcgis();
+        // var opts = {
+        //     url: '/generateToken',
+        //     form: {
+        //         username: process.env.username,
+        //         password: process.env.password,
+        //         referer: 'qaext.arcgis.com',
+        //         f: 'json'
+        //     },
+        //     post: true,
+        //     rootUrl: 'https://qaext.arcgis.com/sharing/rest'
+        // };
+        // 
+        // ago.request(opts)
+        // .then(function (results) {
+        //     console.log('flerpy');
+        //     console.log('>>>>> token: ', results.token);
+        //     console.log('glerpityflop');
+        //     global.token = results.token;
+        //     console.log('Hi, jeremy');
+        // })
+        // .catch(function (err) {
+        //     console.log('>>>>> got error from generateToken: ', err);
+        // });
+        // console.log('>>>> end...');
+        // console.log('>>>> after, token is ' + global.token);
+        //
+
+        console.log('>>>>> in group verification: this.flerpp is: ' + this.flerpp );
+        console.log('>>>>> in group verification: global.flerg is: ' + global.flerg );
+        console.log('>>>>> in group verification: global.agoToken is: ' + global.agoToken );
+        console.log('>>>>> in group verification: this.crapola is: ' + this.crapola );
 
         return true
     });
 
     this.Then(/^I call myFunc$/, () => {
         console.log ("entering, I call myfunc");
-        opendataPage.myFunc1.get(1);
-        console.log ("");
-        opendataPage.myFunc2.get();
-        console.log ("");
+        // opendataPage.myFunc1.get(1); // works
+        // console.log ("");
+        // opendataPage.myFunc2.get();
+        // console.log ("");
         console.log ("myFunc3.foo returns:", opendataPage.myFunc3.foo("abc"));
-        // console.log ("foo2? returns:", opendataPage.myFunc4.foo2("abc"));
-        // console.log ("myFunc5? returns:", opendataPage.myFunc5("abc"));
+        console.log ("in I call myFunc, myFunc7.getToken returns:", opendataPage.myFunc7.getToken());
+        // console.log ("foo2? returns:", opendataPage.myFunc4.foo2("abc")); // doesn't work
+        // console.log ("myFunc5? returns:", opendataPage.myFunc5("abc")); // doesn't work
 
         console.log ("leaving, I call myfunc");
         return true
