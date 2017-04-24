@@ -76,9 +76,7 @@ module.exports = function(){
           + new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
           + " " + b().replace(/-/g,'');
         console.log ("setting this.initiativeTitle to " + initiativeTitle);
-        this.initiativeTitle = initiativeTitle
-          + new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
-          + " " + b().replace(/-/g,'');
+        this.initiativeTitle = initiativeTitle;
 
         var disabled;
         disabled = browser.getAttribute(opendataAdminPage.initiativeCreateNextButton, 'disabled');

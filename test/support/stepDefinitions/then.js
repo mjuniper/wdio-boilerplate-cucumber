@@ -73,6 +73,13 @@ module.exports = function(){
 
     this.Then(/^I verify the collaboration group and initiative item$/, () => {
         console.log ("verifying this.initiativeTitle is "+ this.initiativeTitle + " ...");
+
+        // Want to verify that:
+        // - there is an item: with type keywords: hubInitiative and with title matching (initiative_name)
+        // - there is a group named initiative_name + " Initiative Collaboration Group"
+        // - the item is shared to the group
+
+
         // var agoidentities = require('../../config/agoidentities')
         // console.log ("agoidentitites is: ", agoidentities);
 
@@ -187,14 +194,38 @@ module.exports = function(){
 
         browser.call(function () {
             return ago.request(opts).then(function(results) {
-                console.log('>>>>> from browser.call, token is ' + results.token)
-                global.agoToken2 = results.token
+                console.log('>>>>> from browser.call, token is ' + results.token);
+                global.agoToken2 = results.token;
             })
         })
 
         console.log('>>>>> after browser.call, global.agoToken2 is ' + global.agoToken2);
 
-        return true
+        var authAGO = arcgis({
+            token: global.agoToken2,
+            domain: 'qaext.arcgis.com'
+        });
+
+        var searchOpts = {
+            queryString: `title:${this.initiativeTitle.trim(' ').split(' ').splice(-1)[0]}` // get UUID out of it
+        };
+
+        console.log('>>>>> opts is ' + JSON.stringify(searchOpts));
+
+        browser.pause(5000);
+
+        browser.call(function () {
+            return authAGO.search(searchOpts).then(function(results) {
+                console.log('>>>>> from browser.call, search results is ' + results);
+                global.itemSearchResults = results;
+            })
+        })
+
+        console.log('>>>>> after browser.call, global.itemSearchResults is ' + JSON.stringify(global.itemSearchResults, null, 4));
+        foundTheItem = (global.itemSearchResults.results.length === 1);
+        foundTheItem.should.be.true;
+        console.log(`>>>>> global.itemSearchResults.results[0].typeKeywords is ${JSON.stringify(global.itemSearchResults.results[0].typeKeywords, null, 4)}`);
+        return global.itemSearchResults.results[0].typeKeywords.includes('hubInitiative').should.be.true;
     });
 
     this.Then(/^I call myFunc$/, () => {
