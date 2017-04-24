@@ -170,6 +170,30 @@ module.exports = function(){
         console.log('>>>>> in group verification: global.agoToken is: ' + global.agoToken );
         console.log('>>>>> in group verification: this.crapola is: ' + this.crapola );
 
+        console.log('>>>>> trying browser.call(async stuff)');
+
+        var ago = arcgis();
+        var opts = {
+            url: '/generateToken',
+            form: {
+                username: process.env.username,
+                password: process.env.password,
+                referer: 'qaext.arcgis.com',
+                f: 'json'
+            },
+            post: true,
+            rootUrl: 'https://qaext.arcgis.com/sharing/rest'
+        };
+
+        browser.call(function () {
+            return ago.request(opts).then(function(results) {
+                console.log('>>>>> from browser.call, token is ' + results.token)
+                global.agoToken2 = results.token
+            })
+        })
+
+        console.log('>>>>> after browser.call, global.agoToken2 is ' + global.agoToken2);
+
         return true
     });
 
