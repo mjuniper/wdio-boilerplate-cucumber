@@ -140,7 +140,7 @@ module.exports = function(){
         //     console.log('>>>>> YAY? <<<<<');
         // });
         // console.log('>>>>> made request');
-        
+
         // global.token = "WRONG";
         // console.log('>>>> before, token is ' + global.token);
         // console.log('>>>> begin...');
@@ -156,7 +156,7 @@ module.exports = function(){
         //     post: true,
         //     rootUrl: 'https://qaext.arcgis.com/sharing/rest'
         // };
-        // 
+        //
         // ago.request(opts)
         // .then(function (results) {
         //     console.log('flerpy');
@@ -209,7 +209,7 @@ module.exports = function(){
 
         var uuid = this.initiativeTitle.trim(' ').split(' ').splice(-1)[0];
         var itemSearchOpts = {
-            queryString: `title:${uuid}` 
+            queryString: `title:${uuid}`
         };
 
         console.log('>>>>> itemSearchOpts is ' + JSON.stringify(itemSearchOpts, null, 4));
@@ -224,23 +224,26 @@ module.exports = function(){
                 })
             });
             foundIt = (global.itemSearchResults.results.length >= 1)
-            if (foundIt) { 
-                break; 
-            } else if (numTries === 0) { 
+            if (foundIt) {
+                break;
+            } else if (numTries === 0) {
                 console.log('>>>>> giving up after 5 tries');
-                break; 
-            } else { 
+                break;
+            } else {
                 console.log('>>>>> didn\'t find item; pausing then trying again');
-                browser.pause(1000); 
+                browser.pause(1000);
             }
         } while (true);
 
-        console.log('>>>>> after browser.call, global.itemSearchResults is ' + JSON.stringify(global.itemSearchResults, null, 4));
-        foundTheItem = (global.itemSearchResults.results.length === 1);
-        foundTheItem.should.be.true;
-        console.log(`>>>>> global.itemSearchResults.results[0].typeKeywords is ${JSON.stringify(global.itemSearchResults.results[0].typeKeywords, null, 4)}`);
-        global.itemSearchResults.results[0].typeKeywords.includes('hubInitiative').should.be.true;
+        itemSearchResults = global.itemSearchResults;
 
+        console.log('>>>>> after browser.call, itemSearchResults is ' + JSON.stringify(itemSearchResults, null, 4));
+        foundTheItem = (itemSearchResults.results.length === 1);
+        foundTheItem.should.be.true;
+        console.log(`>>>>> itemSearchResults.results[0].typeKeywords is ${JSON.stringify(itemSearchResults.results[0].typeKeywords, null, 4)}`);
+        siteItemTypeKeywords = itemSearchResults.results[0].typeKeywords;
+        siteItemTypeKeywords.includes('hubInitiative').should.be.true;
+        siteItemGroupId = itemSearchResults.results[0].properties.groupId
 
         // from https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/
         const getContent = function(url) {
@@ -265,19 +268,28 @@ module.exports = function(){
             })
         };
 
+        var groupsSearchRequest = `https://dc.mapsqa.arcgis.com/sharing/rest/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`
+        console.log(`>>>>> about to get ${groupsSearchRequest}`);
         browser.call (function () {
-            return getContent(`https://dc.mapsqa.arcgis.com/sharing/rest/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`)
-              .then((html) => global.groupSearchResult = JSON.parse(html));
+            return getContent(groupsSearchRequest)
+              .then((html) => global.groupsSearchResults = JSON.parse(html))
+              .catch((err) => console.error(err));
             });
-        console.log(`>>>>> global.groupSearchResult is ${global.groupSearchResult}`);
-        var groupSearchResult = global.groupSearchResult;
-        console.log(`>>>>> groupSearchResult is: ${JSON.stringify(groupSearchResult, null, 4)}`);
+        var groupsSearchResults = global.groupsSearchResults;
+        console.log(`>>>>> groupsSearchResults is: ${JSON.stringify(groupsSearchResults, null, 4)}`);
+        groupsSearchResults.results.length.should.be.above(0);
 
-        groupSearchResult.results[0].title.should.equal(`${initiativeTitle} Initiative Collaboration Group`);
-        
+        collaborationGroupId = groupsSearchResults.results[0].id;
+        groupsSearchResults.results[0].title.should.equal(`${initiativeTitle} Initiative Collaboration Group`);
+        collaborationGroupId.should.equal(siteItemGroupId);
+
+
+
+
+
 // I could not make the following work:
 
-//        var groupSearchRequestOpts = {
+//        var groupsSearchRequestOpts = {
 //          url: `/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`,
 //          rootUrl: 'https://dc.mapsqa.arcgis.com/sharing/rest',
 ////          rootUrl: '',
@@ -292,17 +304,15 @@ module.exports = function(){
 ////          domain: 'qaext.arcgis.com'
 //        };
 //
-//        console.log(`>>>>> groupSearchRequestOpts is: ${JSON.stringify(groupSearchRequestOpts, null, 4)}`)
-//        
+//        console.log(`>>>>> groupsSearchRequestOpts is: ${JSON.stringify(groupsSearchRequestOpts, null, 4)}`)
+//
 //        console.log('>>>>> about to call browser.call with request for group search results');
 //        browser.call(function () {
-//            return ago.request(groupSearchRequestOpts).then(function(results) {
-//                global.groupSearchResults = results;
+//            return ago.request(groupsSearchRequestOpts).then(function(results) {
+//                global.groupsSearchResults = results;
 //            })
 //        });
-//        console.log(`>>>>> after browser.call, global.groupSearchResults is ${JSON.stringify(global.groupSearchResults, null, 4)}`);
-
-        
+//        console.log(`>>>>> after browser.call, global.groupsSearchResults is ${JSON.stringify(global.groupsSearchResults, null, 4)}`);
 
         return true
     });
