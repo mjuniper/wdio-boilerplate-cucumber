@@ -180,7 +180,7 @@ module.exports = function(){
         console.log('>>>>> trying browser.call(async stuff)');
 
         var ago = arcgis();
-        var opts = {
+        var requestOpts = {
             url: '/generateToken',
             form: {
                 username: process.env.username,
@@ -192,40 +192,119 @@ module.exports = function(){
             rootUrl: 'https://qaext.arcgis.com/sharing/rest'
         };
 
+        console.log('>>>>> requestOpts is ' + JSON.stringify(requestOpts, null, 4));
         browser.call(function () {
-            return ago.request(opts).then(function(results) {
+            return ago.request(requestOpts).then(function(results) {
                 console.log('>>>>> from browser.call, token is ' + results.token);
-                global.agoToken2 = results.token;
+                global.myToken = results.token;
             })
         })
 
-        console.log('>>>>> after browser.call, global.agoToken2 is ' + global.agoToken2);
+        console.log('>>>>> after browser.call, global.myToken is ' + global.myToken);
 
         var authAGO = arcgis({
-            token: global.agoToken2,
+            token: global.myToken,
             domain: 'qaext.arcgis.com'
         });
 
-        var searchOpts = {
-            queryString: `title:${this.initiativeTitle.trim(' ').split(' ').splice(-1)[0]}` // get UUID out of it
+        var uuid = this.initiativeTitle.trim(' ').split(' ').splice(-1)[0];
+        var itemSearchOpts = {
+            queryString: `title:${uuid}` 
         };
 
-        console.log('>>>>> opts is ' + JSON.stringify(searchOpts));
+        console.log('>>>>> itemSearchOpts is ' + JSON.stringify(itemSearchOpts, null, 4));
 
-        browser.pause(5000);
-
-        browser.call(function () {
-            return authAGO.search(searchOpts).then(function(results) {
-                console.log('>>>>> from browser.call, search results is ' + results);
-                global.itemSearchResults = results;
-            })
-        })
+        var numTries = 5
+        var foundIt = false
+        do {
+            numTries = numTries - 1;
+            browser.call(function () {
+                return authAGO.search(itemSearchOpts).then(function(results) {
+                    global.itemSearchResults = results;
+                })
+            });
+            foundIt = (global.itemSearchResults.results.length >= 1)
+            if (foundIt) { 
+                break; 
+            } else if (numTries === 0) { 
+                console.log('>>>>> giving up after 5 tries');
+                break; 
+            } else { 
+                console.log('>>>>> didn\'t find item; pausing then trying again');
+                browser.pause(1000); 
+            }
+        } while (true);
 
         console.log('>>>>> after browser.call, global.itemSearchResults is ' + JSON.stringify(global.itemSearchResults, null, 4));
         foundTheItem = (global.itemSearchResults.results.length === 1);
         foundTheItem.should.be.true;
         console.log(`>>>>> global.itemSearchResults.results[0].typeKeywords is ${JSON.stringify(global.itemSearchResults.results[0].typeKeywords, null, 4)}`);
-        return global.itemSearchResults.results[0].typeKeywords.includes('hubInitiative').should.be.true;
+        global.itemSearchResults.results[0].typeKeywords.includes('hubInitiative').should.be.true;
+
+
+        // from https://www.tomas-dvorak.cz/posts/nodejs-request-without-dependencies/
+        const getContent = function(url) {
+          // return new pending promise
+          return new Promise((resolve, reject) => {
+            // select http or https module, depending on reqested url
+            const lib = url.startsWith('https') ? require('https') : require('http');
+            const request = lib.get(url, (response) => {
+              // handle http errors
+              if (response.statusCode < 200 || response.statusCode > 299) {
+                 reject(new Error('Failed to load page, status code: ' + response.statusCode));
+               }
+              // temporary data holder
+              const body = [];
+              // on every content chunk, push it to the data array
+              response.on('data', (chunk) => body.push(chunk));
+              // we are done, resolve promise with those joined chunks
+              response.on('end', () => resolve(body.join('')));
+            });
+            // handle connection errors of the request
+            request.on('error', (err) => reject(err))
+            })
+        };
+
+        browser.call (function () {
+            return getContent(`https://dc.mapsqa.arcgis.com/sharing/rest/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`)
+              .then((html) => global.groupSearchResult = JSON.parse(html));
+            });
+        console.log(`>>>>> global.groupSearchResult is ${global.groupSearchResult}`);
+        var groupSearchResult = global.groupSearchResult;
+        console.log(`>>>>> groupSearchResult is: ${JSON.stringify(groupSearchResult, null, 4)}`);
+
+        groupSearchResult.results[0].title.should.equal(`${initiativeTitle} Initiative Collaboration Group`);
+        
+// I could not make the following work:
+
+//        var groupSearchRequestOpts = {
+//          url: `/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`,
+//          rootUrl: 'https://dc.mapsqa.arcgis.com/sharing/rest',
+////          rootUrl: '',
+////          rootUrl: 'https://dc.mapsqa.arcgis.com/sharing/rest',
+////          url: `https://dc.mapsqa.arcgis.com/sharing/rest/community/groups?q=${uuid}&start=1&num=10&sortField=title&f=json&token=${myToken}`,
+////          rootUrl: '',
+////          rootUrl: 'https://dc.mapsqa.arcgis.com/sharing/rest',
+////          rootUrl: 'https://mapsqa.arcgis.com/sharing/rest',
+////          rootUrl: 'https://mapsqa.arcgis.com/sharing/rest',
+////          rootUrl: 'https://qaext.arcgis.com/sharing/rest',
+////          post: false,
+////          domain: 'qaext.arcgis.com'
+//        };
+//
+//        console.log(`>>>>> groupSearchRequestOpts is: ${JSON.stringify(groupSearchRequestOpts, null, 4)}`)
+//        
+//        console.log('>>>>> about to call browser.call with request for group search results');
+//        browser.call(function () {
+//            return ago.request(groupSearchRequestOpts).then(function(results) {
+//                global.groupSearchResults = results;
+//            })
+//        });
+//        console.log(`>>>>> after browser.call, global.groupSearchResults is ${JSON.stringify(global.groupSearchResults, null, 4)}`);
+
+        
+
+        return true
     });
 
     this.Then(/^I call myFunc$/, () => {
